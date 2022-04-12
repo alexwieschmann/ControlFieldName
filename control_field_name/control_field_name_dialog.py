@@ -42,3 +42,32 @@ class ControlFieldNameDialog(QtWidgets.QDialog, FORM_CLASS):
         # http://qt-project.org/doc/qt-4.8/designer-using-a-ui-file.html
         # #widgets-and-dialogs-with-auto-connect
         self.setupUi(self)
+
+        self.btnGo.clicked.connect(self.check_fc_name)
+
+    def check_fc_name(self):
+
+        org_name = self.txtInput.toPlainText()
+        """
+        Use: Die Funktion benennt eine Texteingabe um, so dass sie ArcGIS-FC konform ist
+        :param org_name: Der Eingabe Textstring (Typ: Text)
+        :return: Es wird ein Text zurückgegeben
+        """
+        try:
+            org_name = org_name.lower().replace(u"ä", "ae")
+            org_name = org_name.lower().replace(u"ö", "oe")
+            org_name = org_name.lower().replace(u"ü", "ue")
+            org_name = org_name.lower().replace(u"Ü", "Ue")
+            org_name = org_name.lower().replace(u"Ä", "Ae")
+            org_name = org_name.lower().replace(u"Ö", "Oe")
+        except:
+            pass
+        goodsigntuple = "abcdefghijklmnopqrstuvwxyz0123456789_"
+        output_name = ""
+        for buchstabe in org_name:
+            if buchstabe.lower() in goodsigntuple:
+                output_name += buchstabe
+            else:
+                output_name += "_"
+        output_name = output_name.replace("__", "_")
+        self.txtInput.setPlainText(output_name.lstrip("0123456789_")[:10])
